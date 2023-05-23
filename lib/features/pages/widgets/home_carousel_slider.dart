@@ -1,0 +1,101 @@
+import 'package:carousel_slider/carousel_controller.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
+import 'package:moneyp_e_com_challenge/utils/assets.dart';
+import 'package:sizer/sizer.dart';
+
+class HomeCarouselSlider extends StatefulWidget {
+  const HomeCarouselSlider({super.key});
+
+  @override
+  State<HomeCarouselSlider> createState() => _HomeCarouselSliderState();
+}
+
+class _HomeCarouselSliderState extends State<HomeCarouselSlider> {
+  int _current = 0;
+  final CarouselController _controller = CarouselController();
+
+  List<Widget> imgList = [
+    Stack(
+      children: [
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: Image.asset(
+            Assets.advertOne,
+            fit: BoxFit.fitHeight,
+            height: 39.h,
+          ),
+        ),
+      ],
+    ),
+    Stack(
+      children: [
+        Positioned(
+          bottom: 0,
+          left: 0,
+          child: Image.asset(
+            Assets.advertTwo,
+            fit: BoxFit.fitHeight,
+            height: 39.h,
+          ),
+        ),
+      ],
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(alignment: Alignment.topRight, children: [
+      SizedBox(
+        height: 39.h,
+        child: CarouselSlider(
+          carouselController: _controller,
+          items: imgList,
+          options: CarouselOptions(
+              height: 39.h,
+              viewportFraction: 1,
+              enableInfiniteScroll: true,
+              autoPlay: true,
+              autoPlayInterval: const Duration(seconds: 5),
+              autoPlayAnimationDuration: const Duration(milliseconds: 800),
+              autoPlayCurve: Curves.easeInOut,
+              onPageChanged: (index, reason) {
+                setState(() {
+                  _current = index;
+                });
+              }),
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.only(
+          right: 5.w,
+          top: 15.h,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: imgList.asMap().entries.map((entry) {
+            return GestureDetector(
+              onTap: () => _controller.animateToPage(entry.key),
+              child: AnimatedContainer(
+                curve: Curves.easeOut,
+                duration: const Duration(milliseconds: 500),
+                width: 6.0,
+                height: 2.0,
+                margin:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+                decoration: BoxDecoration(
+                  color: (Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black)
+                      .withOpacity(_current == entry.key ? 0.9 : 0.2),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      )
+    ]);
+  }
+}
